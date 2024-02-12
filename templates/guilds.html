@@ -1,0 +1,30 @@
+{% extends 'index.html' %}
+
+{% block guilds_display %}
+    <table>
+        <tr>
+            {% for el in headers %}  {# get header row setup #}
+                <td>
+                    {{ el }}
+                </td>
+            {% endfor %}
+        </tr>
+        {% for el in guilds %}  {# iterate the items object - each el is a long (6) tuple #}
+            <tr>
+                <td>
+                    {{ el[0] }}
+                </td>
+                <td class="td-bg">
+                    {% set color = el[1] %}
+                        {{ color }}
+                    {% block color_js %}  {# this does not work, attempting to fill cell with color-hex-value
+                                            attempted to just change the css dynamically but unsuccessful #}
+                        <script type="text/javascript">
+                            document.documentElement.style.setProperty('--background-color', {{ color }})
+                        </script>
+                    {% endblock %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock guilds_display %}

@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+
+{% block alliances_display %}
+    <table>
+        <tr>
+            {{ headers[0] }}
+        </tr>
+        {% for el in alliances %}
+        <tr>
+            <td>
+                {{ el[0] }}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock alliances_display %}

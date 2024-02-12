@@ -1,0 +1,20 @@
+{% extends 'index.html' %}
+
+{% block abilities_display %}
+    <table>
+        <tr>
+            {% for el in headers %}  {# get header row setup #}
+                {{ el }}
+            {% endfor %}
+        </tr>
+        {% for el in abilities %}  {# iterate the abilities object - each el is a (3) tuple #}
+            <tr>
+                {% for i in range(3) %}  {# iterate the individual ability tuple #}
+                    <td>
+                        {{ el[i] }}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock abilities_display %}

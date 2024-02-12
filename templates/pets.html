@@ -1,0 +1,22 @@
+{% extends 'index.html' %}
+
+{% block pets_display %}
+    <table>
+        <tr>
+            {% for el in headers %}  {# get header row setup #}
+                <td>
+                    {{ el }}
+                </td>
+            {% endfor %}
+        </tr>
+        {%  for el in pets %}
+            <tr>
+                {% for i in range(5) %}
+                    <td>
+                        {{ el[i] }}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock pets_display %}

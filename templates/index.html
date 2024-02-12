@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FantasyGame Armory</title>
+    <link rel="stylesheet" href="static/css/style.css" />
+</head>
+<body>
+    <div id="app-header" style="text-align: center">
+        <h1>FantasyGame Armory</h1>
+    </div>
+    <div id="sub-header" style="text-align: center">
+        <h3>the most extensive database for FantasyGame</h3>
+    </div>
+    <div class="body-container">
+        <div>
+            <a href="{{ url_for('display_players') }}">Players</a>
+            <a href="{{ url_for('display_pets') }}">Pets</a>
+            <a href="{{ url_for('display_abilities') }}">Abilities</a>
+            <a href="{{ url_for('display_items') }}">Items</a>
+            <a href="{{ url_for('display_guilds') }}">Guilds</a>
+            <a href="{{ url_for('display_alliances') }}">Alliances</a>
+        </div>
+    </div>
+    <div class="element-display">
+        {% block player_display %}{% endblock player_display %}
+        {% block pets_display %}{% endblock pets_display %}
+        {% block abilities_display %}{% endblock abilities_display %}
+        {% block items_display %}{% endblock items_display %}
+        {% block guilds_display %}{% endblock guilds_display %}
+        {% block alliances_display %}{% endblock alliances_display %}
+    </div>
+</body>
+</html>

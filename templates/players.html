@@ -1,0 +1,22 @@
+{% extends 'index.html' %}
+
+{% block player_display %}
+    <table>
+        <tr>
+            {% for el in headers %}  {# get header row setup #}
+                <td>
+                    {{ el }}
+                </td>
+            {% endfor %}
+        </tr>
+        {% for el in players %}  {# iterate the players object - each el is a long (6) tuple #}
+            <tr>
+                {% for i in range(6) %}  {# iterate player tuple by index #}
+                    <td>
+                        {{ el[i] }}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock player_display %}

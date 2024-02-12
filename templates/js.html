@@ -1,0 +1,9 @@
+{% extends 'guilds.html' %}
+{% from 'guilds.html' import color %}
+
+{% block color_js %}
+    blah
+    <script type="text/javascript">
+        document.documentElement.style.setProperty('--background-color', {{ color }})
+    </script>
+{% endblock %}
