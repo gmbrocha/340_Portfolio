@@ -9,7 +9,7 @@
                 </td>
             {% endfor %}
         </tr>
-        {% for el in guilds %}  {# iterate the items object - each el is a long (6) tuple #}
+        {% for el in entity %}  {# iterate the entity object - each el is a long (6) tuple #}
             <tr>
                 <td>
                     {{ el[0] }}
@@ -19,9 +19,6 @@
                         {{ color }}
                     {% block color_js %}  {# this does not work, attempting to fill cell with color-hex-value
                                             attempted to just change the css dynamically but unsuccessful #}
-                        <script type="text/javascript">
-                            document.documentElement.style.setProperty('--background-color', {{ color }})
-                        </script>
                     {% endblock %}
                 </td>
             </tr>

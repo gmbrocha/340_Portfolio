@@ -21,6 +21,9 @@
             <a href="{{ url_for('display_guilds') }}">Guilds</a>
             <a href="{{ url_for('display_alliances') }}">Alliances</a>
         </div>
+        <div>
+            <a href="{{ url_for('create_entry') }}">Create Entry</a> <!-- change this to a 'select entity' dropdown -->
+        </div>
     </div>
     <div class="element-display">
         {% block player_display %}{% endblock player_display %}
@@ -29,6 +32,7 @@
         {% block items_display %}{% endblock items_display %}
         {% block guilds_display %}{% endblock guilds_display %}
         {% block alliances_display %}{% endblock alliances_display %}
+        {% block entry_form %}{% endblock entry_form %}
     </div>
 </body>
 </html>
