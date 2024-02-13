@@ -30,7 +30,7 @@ def display_players():
 
     con = db_connection()
     if con.is_connected():
-        print("Connected to SQL instance!")
+        print("Connected to MySQL instance!")
     else:
         print("Error connecting to SQL instance, route: players")
         return redirect(url_for('index'))
@@ -50,7 +50,7 @@ def display_pets():
 
     con = db_connection()
     if con.is_connected():
-        print("Connected to SQL instance!")
+        print("Connected to MySQL instance!")
     else:
         print("Error connecting to SQL instance, route: pets")
         return redirect(url_for('index'))
@@ -77,7 +77,7 @@ def display_abilities():
 
     con = db_connection()
     if con.is_connected():
-        print("Connected to SQL instance!")
+        print("Connected to MySQL instance!")
     else:
         print("Error connecting to SQL instance, route: abilities")
         return redirect(url_for('index'))
@@ -102,7 +102,7 @@ def display_items():
 
     con = db_connection()
     if con.is_connected():
-        print("Connected to SQL instance!")
+        print("Connected to MySQL instance!")
     else:
         print("Error connecting to SQL instance, route: items")
         return redirect(url_for('index'))
@@ -129,7 +129,7 @@ def display_guilds():
 
     con = db_connection()
     if con.is_connected():
-        print("Connected to SQL instance!")
+        print("Connected to MySQL instance!")
     else:
         print("Error connecting to SQL instance, route: guilds")
         return redirect(url_for('index'))
@@ -159,7 +159,7 @@ def display_alliances():
 
     con = db_connection()
     if con.is_connected():
-        print("Connected to SQL instance!")
+        print("Connected to MySQL instance!")
     else:
         print("Error connecting to SQL instance, route: alliances")
         return redirect(url_for('index'))
