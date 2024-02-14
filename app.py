@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request
 import mysql.connector
 from dotenv import load_dotenv
 import os
@@ -11,6 +11,7 @@ sql_pwd = os.getenv('SERVER_PWD')
 
 @app.route('/')
 def index():
+
     return render_template('index.html')
 
 
@@ -177,10 +178,155 @@ def display_alliances():
     return render_template('alliances.html', entity=alliances, headers=headers)
 
 
-@app.route('/create', methods=['POST', 'GET'])
-def create_entry():
+@app.route('/create-entry-form', methods=['POST', 'GET'])
+def create_entry_form():
 
-    return render_template('entry_form.html')
+    # get the entry type from the form dropdown
+    select = request.form.get('entry-type')
+
+    # get attributes (foreign key fields) for dropdowns for each category by case
+    con = db_connection()
+    cur = con.cursor()
+
+    ability_query = 'SELECT special_abilities.ability_name FROM special_abilities'
+    pet_query = 'SELECT pets.pet_name FROM pets'
+    weapon_query = 'SELECT items.item_name FROM items WHERE items.item_type = "weapon"'
+    armor_query = 'SELECT items.item_name FROM items WHERE items.item_type ="armor"'
+    guild_query = 'SELECT guilds.guild_name FROM guilds'
+    pet_type_query = 'SELECT DISTINCT pets.pet_type FROM pets'
+
+    # create empty queries for cases that the attribute isn't necessary
+    fields = []
+    abilities = []
+    pets = []
+    weapons = []
+    armors = []
+    guilds = []
+    pet_types = []
+
+    # these aren't nested, they don't have their own queries because they are static
+    item_types = ['sword', 'armor']
+    item_rarities = ['common', 'uncommon', 'rare', 'epic', 'legendary']
+
+    match select:
+        case "Player":
+            fields = ['Name', 'Ability', 'Pet', 'Weapon', 'Armor', 'Guild']
+            # get abilities for dropdown
+            cur.execute(ability_query)
+            abilities = cur.fetchall()
+
+            # get pets for dropdown
+            cur.execute(pet_query)
+            pets = cur.fetchall()
+
+            # get weapons for dropdown
+            cur.execute(weapon_query)
+            weapons = cur.fetchall()
+
+            # get armors for dropdown
+            cur.execute(armor_query)
+            armors = cur.fetchall()
+
+            # get guilds for dropdown
+            cur.execute(guild_query)
+            guilds = cur.fetchall()
+
+        case "Pet":
+            fields = ['Name', 'Ability', 'Pet Type', 'Attack', 'Defense']
+
+            # get abilities for dropdown
+            cur.execute(ability_query)
+            abilities = cur.fetchall()
+
+            # get abilities for dropdown
+            cur.execute(pet_type_query)
+            pet_types = cur.fetchall()
+
+        case "Ability":
+            fields = ['Name', 'Attack', 'Cost']
+
+        case "Item":
+            fields = ['Name', 'Item Type', 'Defense', 'Attack', 'Rarity']
+
+        case "Guild":
+            fields = ['Name', 'Color']
+
+        case "Alliance":
+            fields = ['Name']
+
+    con.close()
+
+    return render_template('entry_form.html', select_type=select, fields=fields, abilities=abilities, pets=pets, weapons=weapons,
+                           armors=armors, item_types=item_types, guilds=guilds, item_rarity=item_rarities,
+                           pet_types=pet_types)
+
+
+@app.route('/create-db-entry', methods=['POST'])
+def create_db_entry():
+
+    con = db_connection()
+    cur = con.cursor()
+
+    query = ''
+    values = []
+
+    select_type = request.form.get('select-type')
+    match select_type:
+        case 'Player':
+            fields = ['Name', 'Ability', 'Pet', 'Weapon', 'Armor', 'Guild']
+            for i in range(len(fields)):
+                values.append(request.form.get(fields[i]))
+
+            query = f"""INSERT INTO players (player_name, player_abilityID, petID, weaponID, armorID, guildID) 
+                VALUES ('{values[0]}', (SELECT abilityID FROM special_abilities WHERE ability_name = '{values[1]}'),
+                (SELECT petID FROM pets WHERE pet_name = '{values[2]}'),
+                (SELECT itemID FROM items WHERE item_name = '{values[3]}'), 
+                (SELECT itemID FROM items WHERE item_name = '{values[4]}'), 
+                (SELECT guildID FROM guilds WHERE guild_name = '{values[5]}'));"""
+
+        case 'Pet':
+            # todo validate the attack and defense to be integers
+            fields = ['Name', 'Ability', 'Pet Type', 'Attack', 'Defense']
+            for i in range(len(fields)):
+                values.append(request.form.get(fields[i]))
+            query = f"""INSERT INTO pets (pet_name, pet_abilityID, pet_type, pet_attack, pet_defense) 
+                VALUES ('{values[0]}', (SELECT abilityID FROM special_abilities WHERE ability_name = '{values[1]}'), 
+                '{values[2]}', {int(values[3])}, {int(values[4])})"""
+
+        case 'Ability':
+            # todo validate the attack and cost to be integers
+            fields = ['Name', 'Attack', 'Cost']
+            for i in range(len(fields)):
+                values.append(request.form.get(fields[i]))
+            query = f"""INSERT INTO special_abilities (ability_name, ability_attack, ability_cost)
+                VALUES ('{values[0]}', {int(values[1])}, {int(values[2])})"""
+
+        case 'Item':
+            # todo validate the defense and attack to be integers
+            fields = ['Name', 'Item Type', 'Defense', 'Attack', 'Rarity']
+            for i in range(len(fields)):
+                values.append(request.form.get(fields[i]))
+            query = f"""INSERT INTO items (item_name, item_type, item_defense, item_attack, item_rarity) 
+                VALUES ('{values[0]}', '{values[1]}', {int(values[2])}, {int(values[3])}, '{values[4]}')"""
+
+        case 'Guild':
+            # todo validate the color entry to be an integer
+            fields = ['Name', 'Color']
+            for i in range(len(fields)):
+                values.append(request.form.get(fields[i]))
+            query = f"""INSERT INTO guilds (guild_name, guild_color) 
+                VALUES ('{values[0]}', {int(values[1])})"""
+
+        case 'Alliance':
+            # only 1 value in the return form here, just put it in the query
+            query = f"""INSERT INTO alliances (alliance_name) 
+                VALUES ('{request.form.get('Name')}')"""
+
+    cur.execute(query)
+    con.commit()
+    con.close()
+
+    return redirect(url_for('index'))
 
 
 def db_connection():
