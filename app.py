@@ -188,6 +188,7 @@ def create_entry_form():
     con = db_connection()
     cur = con.cursor()
 
+    # TODO COMMENT THESE QUERIES
     ability_query = 'SELECT special_abilities.ability_name FROM special_abilities'
     pet_query = 'SELECT pets.pet_name FROM pets'
     weapon_query = 'SELECT items.item_name FROM items WHERE items.item_type = "weapon"'
@@ -256,9 +257,9 @@ def create_entry_form():
 
     con.close()
 
-    return render_template('entry_form.html', select_type=select, fields=fields, abilities=abilities, pets=pets, weapons=weapons,
-                           armors=armors, item_types=item_types, guilds=guilds, item_rarity=item_rarities,
-                           pet_types=pet_types)
+    return render_template('entry_form.html', select_type=select, fields=fields, abilities=abilities, pets=pets,
+                           weapons=weapons, armors=armors, item_types=item_types, guilds=guilds,
+                           item_rarity=item_rarities, pet_types=pet_types)
 
 
 @app.route('/create-db-entry', methods=['POST'])
@@ -325,6 +326,70 @@ def create_db_entry():
     cur.execute(query)
     con.commit()
     con.close()
+
+    return redirect(url_for('index'))
+
+
+@app.route('/create-update-form', methods=['POST'])
+def create_update_form():
+
+    # need to check form hidden attribute which will contain the update type
+    select = request.form.get('update-type')
+
+    con = db_connection()
+    cur = con.cursor()
+
+    ability_query = 'SELECT special_abilities.ability_name FROM special_abilities'
+    pet_query = 'SELECT pets.pet_name FROM pets'
+    weapon_query = 'SELECT items.item_name FROM items WHERE items.item_type = "weapon"'
+    armor_query = 'SELECT items.item_name FROM items WHERE items.item_type ="armor"'
+    guild_query = 'SELECT guilds.guild_name FROM guilds'
+
+    fields = []
+    abilities = []
+    pets = []
+    weapons = []
+    armors = []
+    guilds = []
+
+    # TODO FINISH CASES
+    match select:
+        case 'Player':
+            fields = ['Name', 'Ability', 'Pet', 'Weapon', 'Armor', 'Guild']
+
+            cur.execute(ability_query)
+            abilities = cur.fetchall()
+
+            cur.execute(pet_query)
+            pets = cur.fetchall()
+
+            cur.execute(weapon_query)
+            weapons = cur.fetchall()
+
+            cur.execute(armor_query)
+            armors = cur.fetchall()
+
+            cur.execute(guild_query)
+            guilds = cur.fetchall()
+
+        case 'Item':
+            fields = ['Name', 'Item Type', 'Defense', 'Attack', 'Rarity']
+
+    return render_template('update_form.html', select_type=select, fields=fields, abilities=abilities, pets=pets,
+                           weapons=weapons, armors=armors, guilds=guilds)
+
+
+@app.route('/update')
+def update_db_entry():
+
+    # TODO ADD SQL FOR ENTRIES
+    select = request.form.get('select-type')
+
+    match select:
+        case 'Player':
+            fields = ['Name', 'Ability', 'Pet', 'Weapon', 'Armor', 'Guild']
+
+    print('update successful')
 
     return redirect(url_for('index'))
 

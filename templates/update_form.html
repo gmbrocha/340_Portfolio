@@ -1,0 +1,25 @@
+{% extends 'index.html' %}
+
+{% block update_form %}
+    <form class="update-form" method="POST" action="{{url_for('update_db_entry') }}">
+        <input type="hidden" name="select-type" value="{{ select_type }}" />
+        {% for field in fields %}
+            {% if field == "Pet" %}
+                    <span class="input-group-text">Pet</span>
+                    <select name="Pet" class="select-form-control">
+                        {% for pet in pets %}
+                            <option value="{{ pet[0] }}">{{ pet[0] }}</option>
+                        {% endfor %}
+                    </select><br>
+            {% elif field == "Ability" %}
+                <span class="input-group-text">Ability</span>
+                    <select name="Ability" class="select-form-control">
+                        {% for ability in abilities %}
+                            <option value="{{ ability[0] }}">{{ ability[0] }}</option>
+                        {% endfor %}
+                    </select><br>
+            {% endif %}
+        {% endfor %}
+        <input type="submit" value="Submit Update">
+    </form>
+{% endblock update_form %}
