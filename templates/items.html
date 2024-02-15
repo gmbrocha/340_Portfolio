@@ -2,34 +2,40 @@
 
 {% block items_display %}
     <table>
-        <tr>
-            {% for el in headers %}  {# get header row setup #}
-                <td>
-                    {{ el }}
-                </td>
-            {% endfor %}
-        </tr>
-        {% for el in entity %}  {# iterate the entity object - each el is a long (6) tuple #}
+        <thead>
             <tr>
-                {% for i in range(5) %}  {# iterate item tuple by index #}
-                    <td>
-                        {{ el[i] }}
-                    </td>
+                {% for el in headers %}  {# get header row setup #}
+                    <th>
+                        {{ el }}
+                    </th>
                 {% endfor %}
-                <td>
-                    <form class="update-items" method="POST" action="{{ url_for('create_update_form') }}">
-                        <input type="hidden" name="update-type" value="Item" />
-                        <input type="submit" name="Update" value="update-items" />
-                    </form>
-                </td>
-                <td>
-                    <form class="delete-button" method="POST" action="{{ url_for('delete_db_entry') }}">
-                        <input type="hidden" name="delete-type" value="Item" />
-                        <input type="hidden" name="record" value="{{ entity[0][0] }}" />
-                        <input type="submit" name="delete" value="Delete" />
-                    </form>
-                </td>
+                <th></th>
+                <th></th>
             </tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+            {% for el in entity %}  {# iterate the entity object - each el is a long (6) tuple #}
+                <tr>
+                    {% for i in range(5) %}  {# iterate item tuple by index #}
+                        <td>
+                            {{ el[i] }}
+                        </td>
+                    {% endfor %}
+                    <td>
+                        <form class="update-items" method="POST" action="{{ url_for('create_update_form') }}">
+                            <input type="hidden" name="update-type" value="Item" />
+                            <input type="submit" name="Update" value="update-items" />
+                        </form>
+                    </td>
+                    <td>
+                        <form class="delete-button" method="POST" action="{{ url_for('delete_db_entry') }}">
+                            <input type="hidden" name="delete-type" value="Item" />
+                            <input type="hidden" name="record" value="{{ entity[0][0] }}" />
+                            <input type="submit" name="delete" value="Delete" />
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
 {% endblock items_display %}

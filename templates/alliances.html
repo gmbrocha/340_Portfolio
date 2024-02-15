@@ -2,25 +2,33 @@
 
 {% block alliances_display %}
     <table>
-        <tr>
-            {{ headers[0] }}
-        </tr>
-        {% for el in entity %}
-        <tr>
-            <td>
-                {{ el[0] }}
-            </td>
-            <td>
-                UPDATE PLACEHOLDER
-            </td>
-            <td>
-                    <form class="delete-button" method="POST" action="{{ url_for('delete_db_entry') }}">
-                        <input type="hidden" name="delete-type" value="Alliance" />
-                        <input type="hidden" name="record" value="{{ entity[0][0] }}" />
-                        <input type="submit" name="delete" value="Delete" />
-                    </form>
-            </td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>
+                    {{ headers[0] }}
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for el in entity %}
+                <tr>
+                    <td>
+                        {{ el[0] }}
+                    </td>
+                    <td>
+                        UPDATE PLACEHOLDER
+                    </td>
+                    <td>
+                        <form class="delete-button" method="POST" action="{{ url_for('delete_db_entry') }}">
+                            <input type="hidden" name="delete-type" value="Alliance" />
+                            <input type="hidden" name="record" value="{{ entity[0][0] }}" />
+                            <input type="submit" name="delete" value="Delete" />
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
 {% endblock alliances_display %}

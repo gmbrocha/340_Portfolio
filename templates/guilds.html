@@ -2,36 +2,39 @@
 
 {% block guilds_display %}
     <table>
-        <tr>
-            {% for el in headers %}  {# get header row setup #}
-                <td>
-                    {{ el }}
-                </td>
-            {% endfor %}
-        </tr>
-        {% for el in entity %}  {# iterate the entity object - each el is a long (6) tuple #}
+        <thead>
             <tr>
-                <td>
-                    {{ el[0] }}
-                </td>
-                <td class="td-bg">
-                    {% set color = el[1] %}
-                        {{ color }}
-                    {% block color_js %}  {# this does not work, attempting to fill cell with color-hex-value
-                                            attempted to just change the css dynamically but unsuccessful #}
-                    {% endblock %}
-                </td>
-                <td>
-                    UPDATE PLACEHOLDER
-                </td>
-                <td>
-                    <form class="delete-button" method="POST" action="{{ url_for('delete_db_entry') }}">
-                        <input type="hidden" name="delete-type" value="Guild" />
-                        <input type="hidden" name="record" value="{{ entity[0][0] }}" />
-                        <input type="submit" name="delete" value="Delete" />
-                    </form>
-                </td>
+                {% for el in headers %}  {# get header row setup #}
+                    <th>
+                        {{ el }}
+                    </th>
+                {% endfor %}
+                <th></th>
+                <th></th>
             </tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+            {% for el in entity %}  {# iterate the entity object - each el is a long (6) tuple #}
+                <tr>
+                    <td>
+                        {{ el[0] }}
+                    </td>
+                    <td class="td-bg">
+                        {% set color = el[1] %}
+                            {{ color }}
+                    </td>
+                    <td>
+                        UPDATE PLACEHOLDER
+                    </td>
+                    <td>
+                        <form class="delete-button" method="POST" action="{{ url_for('delete_db_entry') }}">
+                            <input type="hidden" name="delete-type" value="Guild" />
+                            <input type="hidden" name="record" value="{{ entity[0][0] }}" />
+                            <input type="submit" name="delete" value="Delete" />
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
 {% endblock guilds_display %}

@@ -2,31 +2,37 @@
 
 {% block pets_display %}
     <table>
-        <tr>
-            {% for el in headers %}  {# get header row setup #}
-                <td>
-                    {{ el }}
-                </td>
-            {% endfor %}
-        </tr>
-        {%  for el in entity %}
+        <thead>
             <tr>
-                {% for i in range(5) %}
-                    <td>
-                        {{ el[i] }}
-                    </td>
+                {% for el in headers %}  {# get header row setup #}
+                    <th>
+                        {{ el }}
+                    </th>
                 {% endfor %}
-                <td>
-                    UPDATE PLACEHOLDER
-                </td>
-                <td>
-                    <form class="delete-button" method="POST" action="{{ url_for('delete_db_entry') }}">
-                        <input type="hidden" name="delete-type" value="Pet" />
-                        <input type="hidden" name="record" value="{{ entity[0][0] }}" />
-                        <input type="submit" name="delete" value="Delete" />
-                    </form>
-                </td>
+                <th></th>
+                <th></th>
             </tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+            {% for el in entity %}
+                <tr>
+                    {% for i in range(5) %}
+                        <td>
+                            {{ el[i] }}
+                        </td>
+                    {% endfor %}
+                    <td>
+                        UPDATE PLACEHOLDER
+                    </td>
+                    <td>
+                        <form class="delete-button" method="POST" action="{{ url_for('delete_db_entry') }}">
+                            <input type="hidden" name="delete-type" value="Pet" />
+                            <input type="hidden" name="record" value="{{ entity[0][0] }}" />
+                            <input type="submit" name="delete" value="Delete" />
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
 {% endblock pets_display %}
