@@ -18,7 +18,11 @@
                     UPDATE PLACEHOLDER
                 </td>
                 <td>
-                    DELETE PLACEHOLDER
+                    <form class="delete-button" method="POST" action="{{ url_for('delete_db_entry') }}">
+                        <input type="hidden" name="delete-type" value="Ability" />
+                        <input type="hidden" name="record" value="{{ entity[0][0] }}" />
+                        <input type="submit" name="delete" value="Delete" />
+                    </form>
                 </td>
             </tr>
         {% endfor %}

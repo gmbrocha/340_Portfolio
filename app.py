@@ -278,20 +278,20 @@ def create_db_entry():
             for i in range(len(fields)):
                 values.append(request.form.get(fields[i]))
 
-            query = f"""INSERT INTO players (player_name, player_abilityID, petID, weaponID, armorID, guildID) 
-                VALUES ('{values[0]}', (SELECT abilityID FROM special_abilities WHERE ability_name = '{values[1]}'),
-                (SELECT petID FROM pets WHERE pet_name = '{values[2]}'),
-                (SELECT itemID FROM items WHERE item_name = '{values[3]}'), 
-                (SELECT itemID FROM items WHERE item_name = '{values[4]}'), 
-                (SELECT guildID FROM guilds WHERE guild_name = '{values[5]}'));"""
+            query = f"""INSERT INTO players (players.player_name, players.player_abilityID, players.petID, players.weaponID, players.armorID, players.guildID) 
+                VALUES ('{values[0]}', (SELECT special_abilities.abilityID FROM special_abilities WHERE special_abilities.ability_name = '{values[1]}'),
+                (SELECT pets.petID FROM pets WHERE pets.pet_name = '{values[2]}'),
+                (SELECT items.itemID FROM items WHERE items.item_name = '{values[3]}'), 
+                (SELECT items.itemID FROM items WHERE items.item_name = '{values[4]}'), 
+                (SELECT items.guildID FROM guilds WHERE items.guild_name = '{values[5]}'));"""
 
         case 'Pet':
             # todo validate the attack and defense to be integers
             fields = ['Name', 'Ability', 'Pet Type', 'Attack', 'Defense']
             for i in range(len(fields)):
                 values.append(request.form.get(fields[i]))
-            query = f"""INSERT INTO pets (pet_name, pet_abilityID, pet_type, pet_attack, pet_defense) 
-                VALUES ('{values[0]}', (SELECT abilityID FROM special_abilities WHERE ability_name = '{values[1]}'), 
+            query = f"""INSERT INTO pets (pets.pet_name, pets.pet_abilityID, pets.pet_type, pets.pet_attack, pets.pet_defense) 
+                VALUES ('{values[0]}', (SELECT special_abilities.abilityID FROM special_abilities WHERE special_abilities.ability_name = '{values[1]}'), 
                 '{values[2]}', {int(values[3])}, {int(values[4])})"""
 
         case 'Ability':
@@ -299,15 +299,15 @@ def create_db_entry():
             fields = ['Name', 'Attack', 'Cost']
             for i in range(len(fields)):
                 values.append(request.form.get(fields[i]))
-            query = f"""INSERT INTO special_abilities (ability_name, ability_attack, ability_cost)
-                VALUES ('{values[0]}', {int(values[1])}, {int(values[2])})"""
+            query = f"""INSERT INTO special_abilities (special_abilities.ability_name, special_abilities.ability_attack, 
+                special_abilities.ability_cost) VALUES ('{values[0]}', {int(values[1])}, {int(values[2])})"""
 
         case 'Item':
             # todo validate the defense and attack to be integers
             fields = ['Name', 'Item Type', 'Defense', 'Attack', 'Rarity']
             for i in range(len(fields)):
                 values.append(request.form.get(fields[i]))
-            query = f"""INSERT INTO items (item_name, item_type, item_defense, item_attack, item_rarity) 
+            query = f"""INSERT INTO items (items.item_name, items.item_type, items.item_defense, items.item_attack, items.item_rarity) 
                 VALUES ('{values[0]}', '{values[1]}', {int(values[2])}, {int(values[3])}, '{values[4]}')"""
 
         case 'Guild':
@@ -315,19 +315,21 @@ def create_db_entry():
             fields = ['Name', 'Color']
             for i in range(len(fields)):
                 values.append(request.form.get(fields[i]))
-            query = f"""INSERT INTO guilds (guild_name, guild_color) 
+            query = f"""INSERT INTO guilds (guilds.guild_name, guilds.guild_color) 
                 VALUES ('{values[0]}', {int(values[1])})"""
 
         case 'Alliance':
             # only 1 value in the return form here, just put it in the query
-            query = f"""INSERT INTO alliances (alliance_name) 
+            query = f"""INSERT INTO alliances (alliances.alliance_name) 
                 VALUES ('{request.form.get('Name')}')"""
 
     cur.execute(query)
     con.commit()
     con.close()
 
-    return redirect(url_for('index'))
+    message = 'Record Created!'
+
+    return render_template('status_message.html', message=message)
 
 
 @app.route('/create-update-form', methods=['POST'])
@@ -342,7 +344,7 @@ def create_update_form():
     ability_query = 'SELECT special_abilities.ability_name FROM special_abilities'
     pet_query = 'SELECT pets.pet_name FROM pets'
     weapon_query = 'SELECT items.item_name FROM items WHERE items.item_type = "weapon"'
-    armor_query = 'SELECT items.item_name FROM items WHERE items.item_type ="armor"'
+    armor_query = 'SELECT items.item_name FROM items WHERE items.item_type = "armor"'
     guild_query = 'SELECT guilds.guild_name FROM guilds'
 
     fields = []
@@ -392,6 +394,40 @@ def update_db_entry():
     print('update successful')
 
     return redirect(url_for('index'))
+
+
+@app.route('/delete', methods=['POST'])
+def delete_db_entry():
+
+    select = request.form.get('delete-type')
+
+    con = db_connection()
+    cur = con.cursor()
+
+    query = ''
+    record = request.form.get('record')
+
+    match select:
+        case 'Player':
+            query = f"""DELETE FROM players WHERE players.player_name = '{record}'"""
+        case 'Pet':
+            query = f"""DELETE FROM pets WHERE pets.pet_name = '{record}'"""
+        case 'Ability':
+            query = f"""DELETE FROM special_abilities WHERE special_abilities.ability_name = '{record}'"""
+        case 'Item':
+            query = f"""DELETE FROM items WHERE items.item_name = '{record}'"""
+        case 'Guild':
+            query = f"""DELETE FROM guilds WHERE guilds.guild_name = '{record}'"""
+        case 'Alliance':
+            query = f"""DELETE FROM alliances WHERE alliances.alliance_name = '{record}'"""
+
+    cur.execute(query)
+    con.commit()
+    con.close()
+
+    message = 'Record Deleted!'
+
+    return render_template('status_message.html', message=message)
 
 
 def db_connection():
